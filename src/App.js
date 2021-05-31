@@ -1,23 +1,45 @@
-import logo from './logo.svg';
-import './App.css';
+import { useMemo, useState } from "react";
+import TimesTable from "./TimesTable";
+
+const useNumberInput = (initialValue = "") => {
+  const [rawValue, setRawValue] = useState(initialValue);
+
+  const onChange = (e) => {
+    const { value } = e.target;
+    setRawValue(value);
+  };
+
+  const value = useMemo(() => {
+    let number = Number(rawValue);
+    if (Number.isNaN(number)) {
+      number = 0;
+    }
+    return number;
+  }, [rawValue]);
+
+  return [
+    value,
+    {
+      type: "number",
+      onChange,
+      value: rawValue,
+    },
+  ];
+};
 
 function App() {
+  const [x, bindX] = useNumberInput(12);
+  const [y, bindY] = useNumberInput(12);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h3>Times table</h3>
+      <p>Say hello to virtualizing</p>
+      <div>
+        <input {...bindX} placeholder="x" />
+        <input {...bindY} placeholder="y" />
+      </div>
+      <TimesTable x={x} y={y} />
     </div>
   );
 }
